@@ -1,0 +1,75 @@
+{% extends "offermaker.html" %}
+{% load offermaker %}
+
+
+{% block TITLE %}OfferMaker Form{% endblock %}
+
+{% block HEAD %}
+    {% offermaker_css %}
+    {% offermaker_javascript %}
+{% endblock %}
+
+{% block BODY %}
+<div>
+
+
+<h1>Offermaker editor</h1>
+
+
+    <ol>
+
+        <li>Create own user account:
+
+<form action="/generate_user" method="post" id="generate_user_from">
+{% csrf_token %}
+{{ form.as_p }}
+    <div id="generate_user_panel">
+        <input type="button" class="btn btn-primary" id="generate_user_btn" value="Generate user"/>
+    </div>
+</form>
+
+<script type="text/javascript">
+    (function () {
+        var $form,
+            url,
+            $panel;
+        $form = $('#generate_user_from');
+        url = $form.prop('action');
+        $panel = $('#generate_user_panel');
+
+        $('#generate_user_btn', $form).click(function () {
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                type: 'POST',
+                data: $form.serialize(),
+                success : [function (data) {
+                    $panel.html(
+                        $('<div class="panel panel-default"><div class="panel-body">' +
+                          '<span>Username: <b>' + data.username + '</b>, Password: <b>' + data.password + '</span>' +
+                          '</div></div>')
+                    );
+                }],
+                timeout: 2000
+            });
+            return false;
+        });
+    }());
+</script>
+
+
+        </li>
+
+        <li>Go to <a href="/admin/" target="_blank">admin site</a></li>
+
+        <li>Add one offer or two,</li>
+
+        <li>Come back to <a href="/">home page</a> and enjoy your offers.</li>
+
+    </ol>
+
+
+
+
+</div>
+{% endblock %}

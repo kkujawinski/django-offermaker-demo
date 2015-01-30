@@ -1,0 +1,20 @@
+{% extends "offermaker.html" %}
+{% load offermaker %}
+
+
+{% block TITLE %}OfferMaker Form{% endblock %}
+
+{% block HEAD %}
+    {% offermaker_css %}
+    {% offermaker_javascript %}
+{% endblock %}
+
+{% block BODY %}
+
+    {% offermaker_preview offer fields='product, crediting_period' %}
+
+    {% offermaker_preview offer fields='product, contribution, interest_rate'%}
+
+    {% offermaker_preview offer %}
+
+{% endblock %}

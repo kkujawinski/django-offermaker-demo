@@ -1,0 +1,81 @@
+{% extends "offermaker.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load offermaker %}
+
+
+{% block TITLE %}OfferMaker Form{% endblock %}
+
+{% block HEAD %}
+    {% offermaker_css %}
+    {% offermaker_javascript %}
+
+	<script type="text/javascript" src="{% static 'fancybox/jquery.fancybox.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'fancybox/jquery.fancybox.css' %}" media="screen" />
+
+{% endblock %}
+
+{% block BODY %}
+
+<h1>{{ selected.name }}</h1>
+
+<h2>Offer preview</h2>
+
+    {% offermaker_preview offer class='table table-bordered' %}
+
+
+    {% bootstrap_messages %}
+
+<h2 style="margin-bottom: 0;">Offer form</h2>
+(<a href="/form_vanilla?id={{ request.GET.id }}" class="fancybox fancybox.iframe">No bootrap version</a>)
+
+<script type="text/javascript">
+		$(document).ready(function () {
+			$('.fancybox').fancybox();
+		});
+</script>
+
+<form action="?id={{ request.GET.id }}" method="post" id="offer_form" style="margin-top: 10px;">
+    <div style="position: relative;">
+        <div class="alert-placeholder" style="position: absolute; z-index: 100; left: 250px; top: 20px; "></div>
+    </div>
+    {% csrf_token %}
+    {% bootstrap_form form field_class='input-group my-input-group' %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "star" %} Submit
+        </button>
+    {% endbuttons %}
+</form>
+
+
+<script type="text/javascript">
+    (function() {
+        $('#offer_form').offer_form({
+            ajax_extra_params: function(params) {
+                var request_id = '{{ request.GET.id }}';
+                if (request_id) {
+                    params['id'] = request_id;
+                }
+                return params;
+            },
+            bootstrap3: true,
+        });
+    })();
+</script>
+
+<h2>Other offer previews</h2>
+
+    {% offermaker_preview offer fields='product, crediting_period' class='table table-bordered' %}
+
+    {% offermaker_preview offer fields='product, contribution' class='table table-bordered' %}
+
+    {% offermaker_preview offer fields='product, interest_rate' class='table table-bordered' %}
+
+    {% offermaker_preview offer fields='crediting_period, contribution' class='table table-bordered' %}
+
+    {% offermaker_preview offer fields='crediting_period, interest_rate' class='table table-bordered' %}
+
+    {% offermaker_preview offer fields='contribution, interest_rate' class='table table-bordered' %}
+
+{% endblock %}

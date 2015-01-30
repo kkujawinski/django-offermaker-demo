@@ -1,0 +1,7 @@
+-r requirements_base.txt
+
+dj-static
+gunicorn
+psycopg2
+static
+django-debug-toolbar
