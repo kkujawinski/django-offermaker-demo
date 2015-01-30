@@ -4,4 +4,4 @@ dj-static
 gunicorn
 psycopg2
 static
-django-debug-toolbar
+dj-database-url
