@@ -1,1 +1,1 @@
-web: gunicorn mycup.mycup.wsgi
+web: gunicorn offermaker_site.wsgi
