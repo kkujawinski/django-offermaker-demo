@@ -2,36 +2,65 @@
 
 {% block BODY %}
 
-<h1>django-offermaker</h1>
+{% verbatim %}
 
-<h2>Demo application</h2>
-<ol class="arabic">
-<li><p class="first">You can check it online <a class="reference external" href="http://offermaker.kjw.pt">http://offermaker.kjw.pt</a></p>
+    <article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1>
+<a id="user-content-offer-maker" class="anchor" href="#offer-maker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Offer Maker</h1>
+<h2>
+<a id="user-content-changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
+<ul>
+<li>
+<p>0.9.5</p>
+<blockquote>
+<ol>
+<li>Small bug fixes</li>
+</ol>
+</blockquote>
 </li>
-<li><p class="first">Or checkout and install locally:</p>
-<pre class="literal-block">
-git clone git&#64;bitbucket.org:kkujawinski/offer-maker-demo-site.git
+<li>
+<p>0.9.4</p>
+<blockquote>
+<ol>
+<li>Django 1.7 support</li>
+<li>Python 3 support</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h2>
+<a id="user-content-demo-application" class="anchor" href="#demo-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo application</h2>
+<ol>
+<li>
+<p>You can check it online <a href="http://offermaker.kjw.pt">http://offermaker.kjw.pt</a></p>
+</li>
+<li>
+<p>Or checkout and install locally:</p>
+<pre>
+git clone git@github.com:kkujawinski/django-offermaker-demo.git
 </pre>
 </li>
 </ol>
-
-<h2>Quick start</h2>
-<ol class="arabic">
-<li><p class="first">Install django-offermaker</p>
-<pre class="literal-block">
+<h2>
+<a id="user-content-quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick start</h2>
+<ol>
+<li>
+<p>Install django-offermaker</p>
+<pre>
 pip install django-offermaker
 </pre>
 </li>
-<li><p class="first">Site configuration in settings.py</p>
-<pre class="literal-block">
+<li>
+<p>Site configuration in settings.py</p>
+<pre>
 INSTALLED_APPS = (
     ...
     'offermaker',
 )
 </pre>
 </li>
-<li><p class="first">Create Django form:</p>
-<pre class="literal-block">
+<li>
+<p>Create Django form:</p>
+<pre>
 from django import forms
 
 class MyForm(forms.Form):
@@ -48,8 +77,9 @@ class MyForm(forms.Form):
     contribution = forms.FloatField(label=u'Contribution', min_value=0)
 </pre>
 </li>
-<li><p class="first">Define your offer (in case you do not store it in database):</p>
-<pre class="literal-block">
+<li>
+<p>Define your offer (in case you do not store it in database):</p>
+<pre>
 offer = {
     'variants': [
         [{
@@ -78,53 +108,44 @@ offer = {
 }
 </pre>
 </li>
-<li>Offer form:</li>
+<li>
+<p>Offer form:</p>
+</li>
 </ol>
-<ol class="loweralpha">
-<li><p class="first">Use dispatcher code in Django view</p>
-<pre class="literal-block">
+<ol>
+<li>
+<p>Use dispatcher code in Django view</p>
+<pre>
 import offermaker
 
-def my_form_view(request):
-    core_object = offermaker.OfferMakerCore(DemoOfferMakerForm, offer)
+class MyOfferFormView(offermaker.OfferMakerFormView):
+    form_class = MyForm
+    offermaker_offer = offer
+    template_name = 'my_offer_form_view.html'
 
-    def handler_get(form):
-        return render(request, 'my_form.html', ({'form': form})
-
-    def handler_post(form):
-        if form.is_valid():
-            return HttpResponseRedirect('success')
-        return handler_get(form)
-
-    dispatcher = offermaker.OfferMakerDispatcher.from_core_object(handler_get, handler_post, core_object=core_object)
-    return dispatcher.handle_request(request)
+my_offer_form_view = MyOfferFormView.as_view()
 </pre>
 </li>
-<li><p class="first">Initialize offerform in template</p>
-<pre class="literal-block">
+<li>
+<p>Initialize offerform in template</p>
+<pre>
 &lt;head&gt;
-{% verbatim %}
 {% load offermaker %}
-{% endverbatim %}
-&lt;script type=&quot;text/javascript&quot; src=&quot;http://code.jquery.com/jquery-1.10.2.min.js&quot;&gt;&lt;/script&gt;
-{% verbatim %}
+&lt;script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"&gt;&lt;/script&gt;
 {% offermaker_javascript %}
-{% endverbatim %}
 &lt;/head&gt;
 
 &lt;body&gt;
 
-&lt;form action=&quot;?&quot; method=&quot;post&quot; id=&quot;offer_form&quot;&gt;
-    &lt;div class=&quot;alert-placeholder&quot; style=&quot;height: 30px;&quot;&gt;&lt;/div&gt;
-    {% verbatim %}
+&lt;form action="?" method="post" id="offer_form"&gt;
+    &lt;div class="alert-placeholder" style="height: 30px;"&gt;&lt;/div&gt;
     {% csrf_token %}
     {{ form.as_p }}
-    {% endverbatim %}
-    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 
 
-&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;script type="text/javascript"&gt;
     (function() {
         $('#offer_form').offer_form();
     })();
@@ -132,32 +153,33 @@ def my_form_view(request):
 </pre>
 </li>
 </ol>
-<ol class="arabic simple" start="6">
+<ol start="6">
 <li>Offer preview:</li>
 </ol>
-<ol class="loweralpha">
-<li><p class="first">Pass offerform object from view to template:</p>
-<pre class="literal-block">
+<ol>
+<li>
+<p>Pass offerform object from view to template:</p>
+<pre>
 def my_form_view(request):
-    core_object = offermaker.OfferMakerCore(DemoOfferMakerForm, offer)
+    core_object = offermaker.OfferMakerCore(MyForm, offer)
 </pre>
 </li>
-<li><p class="first">Use proper template tag in template to print table:</p>
-<pre class="literal-block">
-{% verbatim %}
+<li>
+<p>Use proper template tag in template to print table:</p>
+<pre>
 {% load offermaker %}
 
 {% offermaker_preview offer %}
-{% endverbatim %}
 </pre>
 </li>
 </ol>
-<ol class="arabic simple" start="7">
+<ol start="7">
 <li>Offer editor:</li>
 </ol>
-<ol class="loweralpha">
-<li><p class="first">Use OfferJSONField field in your model. Remember to pass your django form created in 3.:</p>
-<pre class="literal-block">
+<ol>
+<li>
+<p>Use OfferJSONField field in your model. Remember to pass your django form created in 3.:</p>
+<pre>
 import offermaker
 
 class MyOffer(models.Model):
@@ -166,8 +188,9 @@ class MyOffer(models.Model):
     offer = offermaker.OfferJSONField(form_object=MyForm())
 </pre>
 </li>
-<li><p class="first">Create your own Admin Site for model:</p>
-<pre class="literal-block">
+<li>
+<p>Create your own Admin Site for model:</p>
+<pre>
 import models
 
 class OfferAdmin(admin.ModelAdmin):
@@ -179,49 +202,67 @@ admin.site.register(models.Offer, OfferAdmin)
 </pre>
 </li>
 </ol>
+<ol start="7">
+<li>
+<p>Decision-making tool:</p>
+<pre>
+core_object = offermaker.OfferMakerCore(MyForm, offer)
 
-<h2>Basic customization</h2>
-<ol class="arabic simple">
-<li>Using offers stored in database:</li>
-</ol>
-<ol class="loweralpha">
-<li><p class="first">you need to pass proper offer object to Offermaker in form/preview view:</p>
-<pre class="literal-block">
-offer = MyOffer.objects.filter(id=request.GET['id']).first()
-core_object = offermaker.OfferMakerCore(DemoOfferMakerForm, offer.offer)
+result = core_object.decide({'crediting_period': 24})
+print(result['product'].items)  # frozenset({'PROD1', 'PROD3'})
+print(result['interest_rate'].ranges)  # frozenset({(4, 4), (5, 5), (2, 2)})
+print(result['contribution'].ranges)  # frozenset({(10, 20), (30, 70)})
+
+result = core_object.decide({'crediting_period': 24, 'interest_rate': 2})
+print(result['product'].fixed)  # PROD1
 </pre>
 </li>
-<li><p class="first">and configure proper params to be used ajax requests:</p>
-<pre class="literal-block">
+</ol>
+<h2>
+<a id="user-content-basic-customization" class="anchor" href="#basic-customization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic customization</h2>
+<ol>
+<li>Using offers stored in database:</li>
+</ol>
+<ol>
+<li>
+<p>you need to pass proper offer object to Offermaker in form/preview view:</p>
+<pre>
+offer = MyOffer.objects.filter(id=request.GET['id']).first()
+core_object = offermaker.OfferMakerCore(MyForm, offer.offer)
+</pre>
+</li>
+<li>
+<p>and configure proper params to be used ajax requests:</p>
+<pre>
 $('#offer_form').offer_form({
     ajax_extra_params: function(params) {
-    {% verbatim %}
         return { id: {{ request.GET.id }} };
-    {% endverbatim %}
     },
 });
 </pre>
 </li>
 </ol>
-<ol class="arabic" start="2">
-<li><p class="first">Substituting builtin formatters for infotip and error alerts:</p>
-<pre class="literal-block">
+<ol start="2">
+<li>
+<p>Substituting builtin formatters for infotip and error alerts:</p>
+<pre>
 $('#offer_form').offer_form({
     error_alert_factory: function (msg) {
-        var $error = $('&lt;p class=&quot;error&quot;&gt;&lt;span&gt;' + msg + '&lt;/span&gt;&lt;/p&gt;');
+        var $error = $('&lt;p class="error"&gt;&lt;span&gt;' + msg + '&lt;/span&gt;&lt;/p&gt;');
         $('.alert-placeholder', $form).append($error);
         return $error;
     },
     tooltip_factory: function ($field, msg) {
-        var $tooltip = $('&lt;p class=&quot;infotip&quot;&gt;' + msg + '&lt;/p&gt;');
+        var $tooltip = $('&lt;p class="infotip"&gt;' + msg + '&lt;/p&gt;');
         $field.parent().append($tooltip);
         return $tooltip;
     }
 });
 </pre>
 </li>
-<li><p class="first">Use builtin formatters for Twitter Bootstap3:</p>
-<pre class="literal-block">
+<li>
+<p>Use builtin formatters for Twitter Bootstap3:</p>
+<pre>
 (function() {
     $('#offer_form').offer_form({
         bootstrap3: true,
@@ -229,8 +270,9 @@ $('#offer_form').offer_form({
 })();
 </pre>
 </li>
-<li><p class="first">Customizing messages:</p>
-<pre class="literal-block">
+<li>
+<p>Customizing messages:</p>
+<pre>
 (function() {
     $('#offer_form').offer_form({
         msgs: {
@@ -249,21 +291,47 @@ $('#offer_form').offer_form({
 })();
 </pre>
 </li>
-<li><p class="first">Creating preview table for certain fields:</p>
-<pre class="literal-block">
-{% verbatim %}
+<li>
+<p>Creating preview table for certain fields:</p>
+<pre>
 {% offermaker_preview offer fields='product, crediting_period' %}
-{% endverbatim %}
 </pre>
 </li>
-<li><p class="first">Add html attributes to generated preview table:</p>
-<pre class="literal-block">
-{% verbatim %}
+<li>
+<p>Add html attributes to generated preview table:</p>
+<pre>
 {% offermaker_preview offer class='table table-bordered' %}
-{% endverbatim %}
 </pre>
 </li>
 </ol>
+<h2>
+<a id="user-content-troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
+<ol>
+<li>I run Django 1.5 and I have jQuery older than 1.9.</li>
+</ol>
+<p>You need to add new jQuery library dependency in you django admin site:</p>
+<pre>
+class OfferAdmin(admin.ModelAdmin):
+    ...
+    class Media:
+        js = ('//code.jquery.com/jquery-1.11.0.min.js',)
+</pre>
+<ol start="2">
+<li>I run Django 1.5 and django-offermaker doesn't recognize field types properly.</li>
+</ol>
+<p>Django 1.5 admin site is not using HTML5 input types (ex. number), you can give hint
+to django-offermaker about field type with following code:</p>
+<pre>
+def __init__(self, *args, **kwargs):
+    super(MyForm, self).__init__(*args, **kwargs)
+    self.fields['interest_rate'].widget.attrs['data-om-type'] = 'number'
+    self.fields['interest_rate'].widget.attrs['data-om-min'] = 1
+    self.fields['interest_rate'].widget.attrs['data-om-max'] = 5
+    self.fields['contribution'].widget.attrs['data-om-type'] = 'number'
+    self.fields['contribution'].widget.attrs['data-om-min'] = 0
+</pre>
 
+</article>
+{% endverbatim %}
 
 {% endblock %}
