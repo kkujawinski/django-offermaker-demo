@@ -3,12 +3,15 @@
 import json
 import random
 
+from django.contrib import messages
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User, Group
+from django.utils.functional import cached_property
+from django.views.generic import TemplateView
 
 import offermaker
-from .models import (DemoOfferMakerForm, Offer)
+from .models import DemoOfferMakerForm, Offer
 
 
 given_names = ['Nicolas', 'Diego', 'Jackson', 'Mason', 'Daniel', 'Ethan', 'Santiago', 'Christian', 'Matias',
@@ -17,23 +20,23 @@ given_names = ['Nicolas', 'Diego', 'Jackson', 'Mason', 'Daniel', 'Ethan', 'Santi
                'Jayden', 'Liam']
 
 
-def _extra_request_params(request):
+def _get_offer_list(request):
     user = request.user
     if user.is_superuser:
-        all_offers = Offer.objects.all()
+        offer_list = Offer.objects.all()
     else:
-        general_offers = Offer.objects.filter(id__lte=3)
+        general_offers = Offer.objects.filter(user__isnull=True)
         if user.id:
             my_offers = Offer.objects.filter(user=request.user)
-            all_offers = general_offers | my_offers
+            offer_list = general_offers | my_offers
         else:
-            all_offers = general_offers
-    return {'all_offers': all_offers}
+            offer_list = general_offers
+    return offer_list
 
 
 def _offer_form(template):
     def fn(request):
-        params = _extra_request_params(request)
+        params = {'all_offers': _get_offer_list(request)}
         id_param = request.GET.get('id')
         selected = params['all_offers'].filter(id=id_param).first() if id_param else params['all_offers'].first()
         if selected is None:
@@ -62,13 +65,48 @@ offer_form = _offer_form('offermaker_form.html')
 offer_form_vanilla = _offer_form('offermaker_nobootstrap.html')
 
 
+class SelectedOfferFormView(offermaker.OfferMakerFormView):
+    form_class = DemoOfferMakerForm
+    template_name = 'offermaker_form.html'
+
+    @property
+    def offermaker_offer(self):
+        return self.selected_offer.offer
+
+    def dispatch(self, request, *args, **kwargs):
+        self.offer_list = _get_offer_list(request)
+        id_param = request.GET.get('id')
+        if id_param:
+            self.selected_offer = self.offer_list.filter(id=id_param).first()
+        else:
+            self.selected_offer = self.offer_list.first()
+        return super(SelectedOfferFormView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SelectedOfferFormView, self).get_context_data(**kwargs)
+        context['offer_list'] = self.offer_list
+        context['selected'] = self.selected_offer
+        return context
+
+    def get_success_url(self):
+        return self.request.path
+
+    def form_valid(self, form):
+        response = super(SelectedOfferFormView, self).form_valid(form)
+        messages.success(self.request, 'Form has been saved')
+        return response
+
+
+offer_form = SelectedOfferFormView.as_view()
+
+
 def editor(request):
-    params = _extra_request_params(request)
+    params = {'all_offers': _get_offer_list(request)}
     return render(request, 'offermaker_editor.html', params)
 
 
 def how_to(request):
-    params = _extra_request_params(request)
+    params = {'all_offers': _get_offer_list(request)}
     return render(request, 'offermaker_howto.html', params)
 
 

@@ -21,7 +21,7 @@
 
 <h2>Offer preview</h2>
 
-    {% offermaker_preview offer class='table table-bordered' %}
+    {% offermaker_preview offermaker_object class='table table-bordered' %}
 
 
     {% bootstrap_messages %}
@@ -66,16 +66,16 @@
 
 <h2>Other offer previews</h2>
 
-    {% offermaker_preview offer fields='product, crediting_period' class='table table-bordered' %}
+    {% offermaker_preview offermaker_object fields='product, crediting_period' class='table table-bordered' %}
 
-    {% offermaker_preview offer fields='product, contribution' class='table table-bordered' %}
+    {% offermaker_preview offermaker_object fields='product, contribution' class='table table-bordered' %}
 
-    {% offermaker_preview offer fields='product, interest_rate' class='table table-bordered' %}
+    {% offermaker_preview offermaker_object fields='product, interest_rate' class='table table-bordered' %}
 
-    {% offermaker_preview offer fields='crediting_period, contribution' class='table table-bordered' %}
+    {% offermaker_preview offermaker_object fields='crediting_period, contribution' class='table table-bordered' %}
 
-    {% offermaker_preview offer fields='crediting_period, interest_rate' class='table table-bordered' %}
+    {% offermaker_preview offermaker_object fields='crediting_period, interest_rate' class='table table-bordered' %}
 
-    {% offermaker_preview offer fields='contribution, interest_rate' class='table table-bordered' %}
+    {% offermaker_preview offermaker_object fields='contribution, interest_rate' class='table table-bordered' %}
 
 {% endblock %}
