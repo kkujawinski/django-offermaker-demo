@@ -4,119 +4,182 @@
 
 {% verbatim %}
 
-    <article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1>
-<a id="user-content-offer-maker" class="anchor" href="#offer-maker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Offer Maker</h1>
-<h2>
-<a id="user-content-changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
-<ul>
-<li>
-<p>0.9.5</p>
+
+<div class="body">
+<h1 class="title">Django OfferMaker</h1>
+
+
+<p><tt class="docutils literal"><span class="pre">django-offermaker</span></tt> library is a solution for Django applications, which allows
+to create <em>multi variant offers</em> and use them on your site.</p>
+<p><em>Multi variant offer</em> is a structure which defines dependencies between values for
+given set of fields.</p>
+<p>Eg. for the fields <strong>credit contribution</strong> and <strong>number of instalments</strong> we
+have the following dependencies:</p>
 <blockquote>
-<ol>
-<li>Small bug fixes</li>
-</ol>
+<ul class="simple">
+<li>for <strong>0%</strong> credit contribution, it is required to have maximum <strong>12</strong>
+instalments,</li>
+<li>for <strong>10%+</strong> contribution, it is allowed to have <strong>12-24</strong> instalments,</li>
+<li>and for <strong>20%+</strong> contribution, it is allowed to have <strong>12-36</strong> instalments.</li>
+</ul>
+</blockquote>
+<div class="section" id="functions-of-django-offermaker">
+<h1>Functions of <tt class="docutils literal"><span class="pre">django-offermaker</span></tt></h1>
+<blockquote>
+<ul class="simple">
+<li>Create and edit <em>multi variant offer</em> by using <strong>Offermaker Admin Editor</strong>.</li>
+<li>Display <em>multi variant offer</em> in tabular way by using <strong>Offermaker Template
+Tag</strong>.</li>
+<li>Display form which dynamically adjusts to user filled values based on
+<em>multi variant offer</em> by using <strong>OfferMakerFormView Generic View</strong>.</li>
+<li>Make decision which variant of <em>multi variant offer</em> is suitable for
+given parameters by using <strong>decide helper</strong>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="changelog">
+<h1>Changelog</h1>
+<ul>
+<li><p class="first">0.9.8</p>
+<blockquote>
+<ul class="simple">
+<li>Selenium test for offermaker admin editor and offermaker form and bug fixes
+in supported Django and Python versions.</li>
+</ul>
 </blockquote>
 </li>
-<li>
-<p>0.9.4</p>
+<li><p class="first">0.9.7</p>
 <blockquote>
-<ol>
+<ul class="simple">
+<li>Added Class Based View for offermaker form</li>
+<li>Added decide() method</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">0.9.5</p>
+<blockquote>
+<ul class="simple">
+<li>Small bug fixes</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">0.9.4</p>
+<blockquote>
+<ul class="simple">
 <li>Django 1.7 support</li>
 <li>Python 3 support</li>
-</ol>
+</ul>
 </blockquote>
 </li>
 </ul>
-<h2>
-<a id="user-content-demo-application" class="anchor" href="#demo-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo application</h2>
-<ol>
-<li>
-<p>You can check it online <a href="http://offermaker.kjw.pt">http://offermaker.kjw.pt</a></p>
+</div>
+<div class="section" id="support">
+<h1>Support</h1>
+<ul class="simple">
+<li>Environments: Python 2.6, Python 2.7, Python 3.2, Python 3.3, Python 3.4, PyPy,</li>
+<li>Django versions: Django 1.5, Django 1.6, Django 1.7 (Python 2.6 is not supported),</li>
+</ul>
+</div>
+<div class="section" id="demo-application">
+<h1>Demo application</h1>
+<ol class="arabic">
+<li><p class="first">You can check it online <a class="reference external" href="http://offermaker.kjw.pt">http://offermaker.kjw.pt</a></p>
 </li>
-<li>
-<p>Or checkout and install locally:</p>
-<pre>
-git clone git@github.com:kkujawinski/django-offermaker-demo.git
+<li><p class="first">Or checkout and install locally:</p>
+<pre class="literal-block">git clone git@github.com:kkujawinski/django-offermaker-demo.git
 </pre>
 </li>
 </ol>
-<h2>
-<a id="user-content-quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick start</h2>
-<ol>
-<li>
-<p>Install django-offermaker</p>
-<pre>
-pip install django-offermaker
+</div>
+<div class="section" id="quick-start">
+<h1>Quick start</h1>
+<ol class="arabic">
+<li><p class="first">Install django-offermaker</p>
+<pre class="literal-block">pip install django-offermaker
 </pre>
 </li>
-<li>
-<p>Site configuration in settings.py</p>
-<pre>
-INSTALLED_APPS = (
+<li><p class="first">Site configuration in settings.py</p>
+<pre class="literal-block">INSTALLED_APPS = (
     ...
     'offermaker',
 )
 </pre>
 </li>
-<li>
-<p>Create Django form:</p>
-<pre>
-from django import forms
+<li><p class="first">Create Django form with needed fields:</p>
+<pre class="literal-block">from django import forms
 
 class MyForm(forms.Form):
     product = forms.ChoiceField(
-        label=u'Product',
+        label='Product',
         choices=(
             ('', '---'), ('PROD1', 'Product X'), ('PROD2', 'Product Y'), ('PROD3', 'Product Z'),
         ),
         required=False)
     crediting_period = forms.ChoiceField(
-        label=u'Crediting period',
+        label='Crediting period',
         choices=(('', '---'), ('12', '12'), ('24', '24'), ('36', '36'), ('48', '48')))
-    interest_rate = forms.FloatField(label=u'Interest rate', min_value=1, max_value=5)
-    contribution = forms.FloatField(label=u'Contribution', min_value=0)
+    interest_rate = forms.FloatField(label='Interest rate', min_value=1, max_value=5)
+    contribution = forms.FloatField(label='Contribution', min_value=0)
+
+    # # Uncomment for Django 1.5
+    # def __init__(self, *args, **kwargs):
+    #     super(MyForm, self).__init__(*args, **kwargs)
+    #     self.fields['interest_rate'].widget.attrs['data-om-type'] = 'number'
+    #     self.fields['interest_rate'].widget.attrs['data-om-min'] = 1
+    #     self.fields['interest_rate'].widget.attrs['data-om-max'] = 5
+    #     self.fields['contribution'].widget.attrs['data-om-type'] = 'number'
+    #     self.fields['contribution'].widget.attrs['data-om-min'] = 0
 </pre>
 </li>
-<li>
-<p>Define your offer (in case you do not store it in database):</p>
-<pre>
-offer = {
-    'variants': [
-        [{
-            'params': {'product': 'PROD1', 'crediting_period': ['24']},
+<li><p class="first">Define your offer (in case you do not store it in database):</p>
+<pre class="literal-block">offer = {
+    'params': {},
+    'variants': [[
+        {
+            'params': {
+                'crediting_period': ['24'],
+                'product': ['PROD1']
+            }
         }, {
-            'params': {'product': 'PROD2'},
-            'variants': [
-                {'params': {'crediting_period': ['12']}},
-                {'params': {'crediting_period': ['36']}},
-                {'params': {'crediting_period': ['48']}}]
+            'params': {
+                'crediting_period': ['12', '36', '48'],
+                'product': ['PROD2']
+            }
         }, {
-            'params': {'product': 'PROD3'},
-        }],
-        [{
-            'params': {'product': 'PROD1'},
-            'variants': [
-                {'params': {'contribution': (10, 20), 'interest_rate': (2, 2)}},
-                {'params': {'contribution': (30, 40), 'interest_rate': (4, 4)}}]
+            'params': {
+                'product': ['PROD3']
+            }
+        }
+    ], [
+        {
+            'params': {
+                'contribution': [[10, 20]],
+                'interest_rate': [[2, 2]],
+                'product': ['PROD1']
+            }
         }, {
-            'params': {'product': ['PROD2', 'PROD3']},
-            'variants': [{
-                'params': {'contribution': (30, 70), 'interest_rate': (5, 5)}
-            }]
-        }]
-    ]
+            'params': {
+                'contribution': [[30, 40]],
+                'interest_rate': [[4, 4]],
+                'product': ['PROD1']
+            }
+        }, {
+            'params': {
+                'contribution': [[30, 70]],
+                'interest_rate': [[5, 5]],
+                'product': ['PROD2', 'PROD3']
+            }
+        }
+    ]]
 }
 </pre>
 </li>
-<li>
-<p>Offer form:</p>
+<li><p class="first">Offer form:</p>
 </li>
 </ol>
-<ol>
-<li>
-<p>Use dispatcher code in Django view</p>
-<pre>
-import offermaker
+<ol class="loweralpha">
+<li><p class="first">Use dispatcher code in Django view</p>
+<pre class="literal-block">import offermaker
 
 class MyOfferFormView(offermaker.OfferMakerFormView):
     form_class = MyForm
@@ -126,10 +189,8 @@ class MyOfferFormView(offermaker.OfferMakerFormView):
 my_offer_form_view = MyOfferFormView.as_view()
 </pre>
 </li>
-<li>
-<p>Initialize offerform in template</p>
-<pre>
-&lt;head&gt;
+<li><p class="first">Initialize offerform in template</p>
+<pre class="literal-block">&lt;head&gt;
 {% load offermaker %}
 &lt;script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"&gt;&lt;/script&gt;
 {% offermaker_javascript %}
@@ -153,88 +214,92 @@ my_offer_form_view = MyOfferFormView.as_view()
 </pre>
 </li>
 </ol>
-<ol start="6">
-<li>Offer preview:</li>
+<ol class="arabic simple" start="6">
+<li>Offer preview with Offermaker Template Tag</li>
 </ol>
-<ol>
-<li>
-<p>Pass offerform object from view to template:</p>
-<pre>
-def my_form_view(request):
-    core_object = offermaker.OfferMakerCore(MyForm, offer)
+<ol class="loweralpha">
+<li><p class="first">Pass offer form object from view to template:</p>
+<pre class="literal-block">class MyOfferPreviewView(TemplateView):
+    template_name = 'offer_preview.html'
+
+    def get_context_data(self):
+        output = super(MyOfferPreviewView, self).get_context_data()
+        output['offer'] = offermaker.OfferMakerCore(MyForm, offer)
+        return output
 </pre>
 </li>
-<li>
-<p>Use proper template tag in template to print table:</p>
-<pre>
-{% load offermaker %}
+<li><p class="first">Use proper template tag in template to print table:</p>
+<pre class="literal-block">{% load offermaker %}
 
 {% offermaker_preview offer %}
 </pre>
 </li>
 </ol>
-<ol start="7">
-<li>Offer editor:</li>
+<ol class="arabic simple" start="7">
+<li>Offermaker Admin Editor:</li>
 </ol>
-<ol>
-<li>
-<p>Use OfferJSONField field in your model. Remember to pass your django form created in 3.:</p>
-<pre>
-import offermaker
+<ol class="loweralpha">
+<li><p class="first">Use OfferJSONField field in your model. Remember to pass your django form created in 3.:</p>
+<pre class="literal-block">import offermaker
+
+class MyOfferMakerField(offermaker.OfferJSONField):
+    form_object = MyForm()
 
 class MyOffer(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
-    offer = offermaker.OfferJSONField(form_object=MyForm())
+    offer = MyOfferMakerField()
 </pre>
 </li>
-<li>
-<p>Create your own Admin Site for model:</p>
-<pre>
-import models
+<li><p class="first">Create your own Admin Site for model:</p>
+<pre class="literal-block">import models
 
 class OfferAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name', 'user')
     fields = ('name', 'offer')
 
+    # # Uncomment for Django 1.5
+    # class Media:
+    #     js = ('//code.jquery.com/jquery-1.11.0.min.js',)
+
+
 admin.site.register(models.Offer, OfferAdmin)
 </pre>
 </li>
 </ol>
-<ol start="7">
-<li>
-<p>Decision-making tool:</p>
-<pre>
-core_object = offermaker.OfferMakerCore(MyForm, offer)
+<ol class="arabic" start="7">
+<li><p class="first">Decide helper:</p>
+<pre class="literal-block">core_object = offermaker.OfferMakerCore(MyForm, offer)
 
 result = core_object.decide({'crediting_period': 24})
-print(result['product'].items)  # frozenset({'PROD1', 'PROD3'})
-print(result['interest_rate'].ranges)  # frozenset({(4, 4), (5, 5), (2, 2)})
-print(result['contribution'].ranges)  # frozenset({(10, 20), (30, 70)})
+print(result['product'].items)
+# frozenset({'PROD1', 'PROD3'})
+print(result['interest_rate'].ranges)
+# frozenset({(4, 4), (5, 5), (2, 2)})
+print(result['contribution'].ranges)
+# frozenset({(10, 20), (30, 70)})
 
 result = core_object.decide({'crediting_period': 24, 'interest_rate': 2})
-print(result['product'].fixed)  # PROD1
+print(result['product'].fixed)
+# PROD1
 </pre>
 </li>
 </ol>
-<h2>
-<a id="user-content-basic-customization" class="anchor" href="#basic-customization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic customization</h2>
-<ol>
+</div>
+<div class="section" id="basic-customization">
+<h1>Basic customization</h1>
+<ol class="arabic simple">
 <li>Using offers stored in database:</li>
 </ol>
-<ol>
-<li>
-<p>you need to pass proper offer object to Offermaker in form/preview view:</p>
-<pre>
-offer = MyOffer.objects.filter(id=request.GET['id']).first()
+<ol class="loweralpha">
+<li><p class="first">you need to pass proper offer object to Offermaker in form/preview view:</p>
+<pre class="literal-block">offer = MyOffer.objects.filter(id=request.GET['id']).first()
 core_object = offermaker.OfferMakerCore(MyForm, offer.offer)
 </pre>
 </li>
-<li>
-<p>and configure proper params to be used ajax requests:</p>
-<pre>
-$('#offer_form').offer_form({
+<li><p class="first">and configure proper params to be used in ajax requests:</p>
+<pre class="literal-block">$('#offer_form').offer_form({
     ajax_extra_params: function(params) {
         return { id: {{ request.GET.id }} };
     },
@@ -242,11 +307,9 @@ $('#offer_form').offer_form({
 </pre>
 </li>
 </ol>
-<ol start="2">
-<li>
-<p>Substituting builtin formatters for infotip and error alerts:</p>
-<pre>
-$('#offer_form').offer_form({
+<ol class="arabic" start="2">
+<li><p class="first">Substituting builtin formatters for infotip and error alerts:</p>
+<pre class="literal-block">$('#offer_form').offer_form({
     error_alert_factory: function (msg) {
         var $error = $('&lt;p class="error"&gt;&lt;span&gt;' + msg + '&lt;/span&gt;&lt;/p&gt;');
         $('.alert-placeholder', $form).append($error);
@@ -260,20 +323,16 @@ $('#offer_form').offer_form({
 });
 </pre>
 </li>
-<li>
-<p>Use builtin formatters for Twitter Bootstap3:</p>
-<pre>
-(function() {
+<li><p class="first">Use builtin formatters for Twitter Bootstap3:</p>
+<pre class="literal-block">(function() {
     $('#offer_form').offer_form({
         bootstrap3: true,
     });
 })();
 </pre>
 </li>
-<li>
-<p>Customizing messages:</p>
-<pre>
-(function() {
+<li><p class="first">Customizing messages:</p>
+<pre class="literal-block">(function() {
     $('#offer_form').offer_form({
         msgs: {
             'NO_VARIANTS': 'No matching variants',
@@ -291,47 +350,19 @@ $('#offer_form').offer_form({
 })();
 </pre>
 </li>
-<li>
-<p>Creating preview table for certain fields:</p>
-<pre>
-{% offermaker_preview offer fields='product, crediting_period' %}
+<li><p class="first">Creating preview table for certain fields:</p>
+<pre class="literal-block">{% offermaker_preview offer fields='product, crediting_period' %}
 </pre>
 </li>
-<li>
-<p>Add html attributes to generated preview table:</p>
-<pre>
-{% offermaker_preview offer class='table table-bordered' %}
+<li><p class="first">Add html attributes to generated preview table:</p>
+<pre class="literal-block">{% offermaker_preview offer class='table table-bordered' %}
 </pre>
 </li>
 </ol>
-<h2>
-<a id="user-content-troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
-<ol>
-<li>I run Django 1.5 and I have jQuery older than 1.9.</li>
-</ol>
-<p>You need to add new jQuery library dependency in you django admin site:</p>
-<pre>
-class OfferAdmin(admin.ModelAdmin):
-    ...
-    class Media:
-        js = ('//code.jquery.com/jquery-1.11.0.min.js',)
-</pre>
-<ol start="2">
-<li>I run Django 1.5 and django-offermaker doesn't recognize field types properly.</li>
-</ol>
-<p>Django 1.5 admin site is not using HTML5 input types (ex. number), you can give hint
-to django-offermaker about field type with following code:</p>
-<pre>
-def __init__(self, *args, **kwargs):
-    super(MyForm, self).__init__(*args, **kwargs)
-    self.fields['interest_rate'].widget.attrs['data-om-type'] = 'number'
-    self.fields['interest_rate'].widget.attrs['data-om-min'] = 1
-    self.fields['interest_rate'].widget.attrs['data-om-max'] = 5
-    self.fields['contribution'].widget.attrs['data-om-type'] = 'number'
-    self.fields['contribution'].widget.attrs['data-om-min'] = 0
-</pre>
+</div>
+ </div>
 
-</article>
+
 {% endverbatim %}
 
 {% endblock %}
